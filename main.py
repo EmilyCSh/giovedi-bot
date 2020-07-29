@@ -13,6 +13,7 @@ from time import sleep
 updater = Updater(token=TOKEN, use_context=True)
 dispatcher = updater.dispatcher
 j = updater.job_queue
+CHANNEL = "@egiovedioggi"
 
 
 def start(update, context):
@@ -40,11 +41,11 @@ dispatcher.add_handler(day_handler)
 def callback_tuesday(context: telegram.ext.CallbackContext):
     if datetime.now().weekday() == 3:
         print("Sì daily")
-        context.bot.send_message(chat_id='@egiovedioggi', 
+        context.bot.send_message(chat_id=CHANNEL, 
                              text='Sì')
     else:
         print("No daily")
-        context.bot.send_message(chat_id='@egiovedioggi', 
+        context.bot.send_message(chat_id=CHANNEL, 
                              text='No')
 
 job_minute = j.run_daily(callback_tuesday, 1)
