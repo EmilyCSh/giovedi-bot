@@ -1,3 +1,4 @@
+import telegram.ext
 from telegram.ext import Updater
 from telegram.ext import CommandHandler
 from dotenv import load_dotenv
@@ -11,6 +12,7 @@ from time import sleep
 
 updater = Updater(token=TOKEN, use_context=True)
 dispatcher = updater.dispatcher
+j = updater.job_queue
 
 
 def start(update, context):
@@ -33,6 +35,19 @@ def day(update, context):
 
 day_handler = CommandHandler('day', day)
 dispatcher.add_handler(day_handler)
+
+
+def callback_tuesday(context: telegram.ext.CallbackContext):
+    if datetime.now().weekday() == 3:
+        print("Sì daily")
+        context.bot.send_message(chat_id='@egiovedioggi', 
+                             text='Sì')
+    else:
+        print("No daily")
+        context.bot.send_message(chat_id='@egiovedioggi', 
+                             text='No')
+
+job_minute = j.run_daily(callback_tuesday, 1)
 
 
 updater.start_polling()
