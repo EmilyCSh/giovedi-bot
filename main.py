@@ -38,7 +38,7 @@ day_handler = CommandHandler('day', day)
 dispatcher.add_handler(day_handler)
 
 
-def callback_tuesday(context: telegram.ext.CallbackContext):
+def callback_thursday(context: telegram.ext.CallbackContext):
     if datetime.now().weekday() == 3:
         print("Sì daily")
         context.bot.send_message(chat_id=CHANNEL, 
@@ -48,7 +48,8 @@ def callback_tuesday(context: telegram.ext.CallbackContext):
         context.bot.send_message(chat_id=CHANNEL, 
                              text='No')
 
-job_minute = j.run_daily(callback_tuesday, 1)
+job_daily = j.run_daily(callback_thursday, 1)
+
 
 
 updater.start_polling()
