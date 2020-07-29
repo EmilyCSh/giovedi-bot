@@ -1,0 +1,25 @@
+# È Giovedì Bot
+
+È Giovedì Bot è un bot in Telegram la cui funzione è informare l'utente, previa domanda e aggiornando un canale dedicato a cadenza quotidiana, se la data odierna corrisponde a giovedì. Ad ogni data interrogazione del bot, l'output dello stesso corrisponderà a "Sì" nel caso in cui la data al momento sia veramente giovedì, "No" in caso contrario.
+
+## Perché?
+
+L'idea di creare questo bot è nata da un meme diffusosi nella community Telegram italiana che consiste nel trovare vari modi per far leggere a quante più persone possibile la frase "è giovedì", sia esso creando gif con questa frase in sovraimpressione oppure in modi più creativi.
+
+## Utilizzo
+
+Il bot è stato scritto in Python 3 utilizzando la libreria [python-telegram-bot](https://github.com/python-telegram-bot/python-telegram-bot). Le seguenti dipendenze sono necessarie per l'esecuzione del bot:
+
+```bash
+pip install telegram
+pip install telegram.ext
+pip install python-dotenv
+```
+
+Se non si volesse eseguire `pip` sul proprio sistema, è sempre possibile installare tali dipendenze dalle repository della propria distro Linux, o utilizzando [pipenv](https://github.com/pypa/pipenv) con il `Pipfile` qui fornito.
+
+È inoltre necessario che nella root del progetto sia presente un file chiamato `secret.env` contenente il TOKEN del bot che si intende utilizzare rispettando questo formato:
+
+```env
+TG_TOKEN = {token rilasciata da Botfather}
+```
