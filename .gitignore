@@ -1,0 +1,8 @@
+doc_2020-07-22_11-27-22-3.png
+main_old.py
+.idea/
+.vscode/
+*test*
+secret.env
+doc_2020-07-29_15-01-40.flake8
+Pipfile.lock
