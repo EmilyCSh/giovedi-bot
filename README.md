@@ -22,3 +22,14 @@ Se non si volesse eseguire `pip` sul proprio sistema, è sempre possibile instal
 ```env
 TG_TOKEN = {token rilasciata da Botfather}
 ```
+
+## Utilizzo con Docker
+
+Se si preferisce usare Docker per il deployment del bot, è possibile creare un container partendo dal `Dockerfile` presente nella repo.
+
+```bash
+git clone https://gitlab.com/chic_luke/giovedi-bot
+cd giovedi-bot
+docker build -t chic_luke/giovedibot:alpha .
+docker run --rm [ID]
+```
