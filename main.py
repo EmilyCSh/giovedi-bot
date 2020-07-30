@@ -48,7 +48,7 @@ def callback_thursday(context: telegram.ext.CallbackContext):
         context.bot.send_message(chat_id=CHANNEL, 
                              text='No')
 
-job_daily = j.run_daily(callback_thursday, 1)
+job_daily = j.run_daily(callback_thursday, datetime.now())
 
 
 
