@@ -11,8 +11,7 @@ L'idea di creare questo bot è nata da un meme diffusosi nella community Telegra
 Il bot è stato scritto in Python 3 utilizzando la libreria [python-telegram-bot](https://github.com/python-telegram-bot/python-telegram-bot). Le seguenti dipendenze sono necessarie per l'esecuzione del bot:
 
 ```bash
-pip install telegram
-pip install telegram.ext
+pip install python-telegram-bot
 pip install python-dotenv
 ```
 
