@@ -23,54 +23,33 @@ def start(update, context):
 
 # Command /day: returns "Yes" if day is Thursday, else, "No":
 def day(update, context):
-    is_thu = datetime.now().weekday() == 3
-
-    if is_thu:
-        context.bot.send_message(chat_id=update.effective_chat.id, text="Sì")
-    else:
-        context.bot.send_message(chat_id=update.effective_chat.id, text="No")
+    context.bot.send_message(update.effective_chat.id, is_thu())
 
 
 # Post message to channel every day at midnight:
 def callback_thursday(context: telegram.ext.CallbackContext):
-    if datetime.now().weekday() == 3:
-        logger.info("Channel updated with YES")
-        context.bot.send_message(chat_id=CHANNEL, 
-                             text='Sì')
-    else:
-        logger.info("Channel updated with NO")
-        context.bot.send_message(chat_id=CHANNEL, 
-                             text='No')
+    logger.info(f"Channel updated with {msg := is_thu()}")
+    context.bot.send_message(CHANNEL, msg)
 
 
 # Inline:
-def inline_day_eval():
-    if datetime.now().weekday() == 3:
-        return "Sì"
-    else:
-        return "No"
+def is_thu():
+    return "Sì" if datetime.now().weekday() == 3 else "No"
 
 def inline_day(update, context):
-    results = list()
-    results.append(
+    results = [
         InlineQueryResultArticle(
-            id=inline_day_eval(),
+            id=is_thu(),
             title='È giovedì oggi?',
-            input_message_content=InputTextMessageContent(inline_day_eval())
-        )
-    )
+            input_message_content=InputTextMessageContent(is_thu())
+        )]
     context.bot.answer_inline_query(update.inline_query.id, results)
 
 
 def main():
-    # Import env file for external variables:
-    env_path = Path('.') / 'secret.env':
-    # env_path = Path('.') / 'devel.env'
-    load_dotenv(dotenv_path=env_path)
-    # Import TOKEN from env:
-    TOKEN = os.getenv('TG_TOKEN')
-    # Import CHANNEL from env:
-    CHANNEL = os.getenv('CHANNEL')
+    # Import env file for external variables and import TOKEN and CHANNEL:
+    load_dotenv(dotenv_path=Path('.') / 'secret.env')
+    TOKEN, CHANNEL = os.getenv('TG_TOKEN'), os.getenv('CHANNEL')
 
     # Implement updater:
     updater = Updater(token=TOKEN, use_context=True)
@@ -79,10 +58,8 @@ def main():
     # Implement JobQueue job to be scheduled daily:
     j = updater.job_queue
 
-    # Command /start:
+    # Commands:
     updater.dispatcher.add_handler(CommandHandler('start', start))
-
-    # Command /day:
     updater.dispatcher.add_handler(CommandHandler('day', day))
 
     # Run bot inline:
