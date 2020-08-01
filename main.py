@@ -3,7 +3,6 @@ from telegram.ext import Updater, CommandHandler
 from telegram import InlineQueryResultArticle, InputTextMessageContent
 from telegram.ext import InlineQueryHandler
 from telegram.utils.helpers import escape_markdown
-import logging
 from dotenv import load_dotenv
 from pathlib import Path
 import os
@@ -17,11 +16,6 @@ from uuid import uuid4
 env_path = Path('.') / 'devel.env'
 load_dotenv(dotenv_path=env_path)
 TOKEN = os.getenv('TG_TOKEN')
-
-
-# Logging
-logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
-logger = logging.getLogger(__name__)
 
 
 # Implement updater
@@ -90,6 +84,5 @@ def inline_day(update, context):
 
 inline_day_handler = InlineQueryHandler(inline_day)
 dispatcher.add_handler(inline_day_handler)
-
 
 updater.start_polling()
