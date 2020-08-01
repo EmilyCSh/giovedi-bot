@@ -63,7 +63,6 @@ def inline_day(update, context):
 
 
 def main():
-    print(main)
     # Import env file for external variables:
     # env_path = Path('.') / 'secret.env':
     env_path = Path('.') / 'devel.env'
