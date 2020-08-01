@@ -32,7 +32,7 @@ Se si preferisce usare Docker per il deployment del bot, è possibile creare un 
 git clone https://gitlab.com/chic_luke/giovedi-bot
 cd giovedi-bot
 docker build -t chic_luke/giovedibot:alpha .
-docker run --rm [ID]    # Run the bot with no output
+docker run --rm [ID]
 ```
 
 ## Utilizzo con pipenv
