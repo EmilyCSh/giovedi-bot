@@ -15,7 +15,7 @@ pip install python-telegram-bot
 pip install python-dotenv
 ```
 
-Se non si volesse eseguire `pip` sul proprio sistema, è sempre possibile installare tali dipendenze dalle repository della propria distro Linux, o utilizzando [pipenv](https://github.com/pypa/pipenv) con il `Pipfile` qui fornito.
+Se non si volesse eseguire `pip` sul proprio sistema, è sempre possibile installare tali dipendenze dalle repository della propria distro Linux, o utilizzando [pipenv](https://github.com/pypa/pipenv).
 
 È inoltre necessario che nella root del progetto sia presente un file chiamato `secret.env` contenente il TOKEN del bot che si intende utilizzare nonché il nome del canale target rispettando questo formato:
 
@@ -32,5 +32,15 @@ Se si preferisce usare Docker per il deployment del bot, è possibile creare un 
 git clone https://gitlab.com/chic_luke/giovedi-bot
 cd giovedi-bot
 docker build -t chic_luke/giovedibot:alpha .
-docker run --rm [ID]
+docker run --rm [ID]    # Run the bot with no output
+```
+
+## Utilizzo con pipenv
+
+Per eseguire il bot con `pipenv`:
+
+```bash
+pipenv install
+pipenv run pip install requirements.txt
+pipenv run python main.py
 ```
