@@ -64,8 +64,8 @@ def inline_day(update, context):
 
 def main():
     # Import env file for external variables:
-    # env_path = Path('.') / 'secret.env':
-    env_path = Path('.') / 'devel.env'
+    env_path = Path('.') / 'secret.env':
+    # env_path = Path('.') / 'devel.env'
     load_dotenv(dotenv_path=env_path)
     # Import TOKEN from env:
     TOKEN = os.getenv('TG_TOKEN')
