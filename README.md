@@ -17,10 +17,11 @@ pip install python-dotenv
 
 Se non si volesse eseguire `pip` sul proprio sistema, è sempre possibile installare tali dipendenze dalle repository della propria distro Linux, o utilizzando [pipenv](https://github.com/pypa/pipenv) con il `Pipfile` qui fornito.
 
-È inoltre necessario che nella root del progetto sia presente un file chiamato `secret.env` contenente il TOKEN del bot che si intende utilizzare rispettando questo formato:
+È inoltre necessario che nella root del progetto sia presente un file chiamato `secret.env` contenente il TOKEN del bot che si intende utilizzare nonché il nome del canale target rispettando questo formato:
 
 ```env
 TG_TOKEN = {token rilasciata da Botfather}
+CHANNEL = @channelid
 ```
 
 ## Utilizzo con Docker

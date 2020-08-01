@@ -16,13 +16,12 @@ env_path = Path('.') / 'secret.env'
 # env_path = Path('.') / 'devel.env'
 load_dotenv(dotenv_path=env_path)
 TOKEN = os.getenv('TG_TOKEN')
-
+CHANNEL = os.getenv('CHANNEL')
 
 # Implement updater
 updater = Updater(token=TOKEN, use_context=True)
 dispatcher = updater.dispatcher
 j = updater.job_queue
-CHANNEL = "@egiovedioggi"
 
 
 # Command /start: starts the bot and returns a nice message
