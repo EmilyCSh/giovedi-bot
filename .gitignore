@@ -4,6 +4,7 @@ main_old.py
 .vscode/
 *test*
 secret.env
+devel.env
 doc_2020-07-29_15-01-40.flake8
 Pipfile.lock
 private_instance/
