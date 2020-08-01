@@ -1,14 +1,12 @@
 import telegram.ext
-from telegram.ext import Updater, CommandHandler
+from telegram.ext import Updater, CommandHandler, InlineQueryHandler
 from telegram import InlineQueryResultArticle, InputTextMessageContent
-from telegram.ext import InlineQueryHandler
 from telegram.utils.helpers import escape_markdown
 import logging
 from dotenv import load_dotenv
 from pathlib import Path
 import os
-from datetime import datetime
-from datetime import time
+from datetime import datetime, time
 from time import sleep
 from uuid import uuid4
 
