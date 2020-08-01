@@ -3,6 +3,7 @@ from telegram.ext import Updater, CommandHandler
 from telegram import InlineQueryResultArticle, InputTextMessageContent
 from telegram.ext import InlineQueryHandler
 from telegram.utils.helpers import escape_markdown
+import logging
 from dotenv import load_dotenv
 from pathlib import Path
 import os
@@ -11,12 +12,19 @@ from datetime import time
 from time import sleep
 from uuid import uuid4
 
+
 # TOKEN
-env_path = Path('.') / 'secret.env'
-# env_path = Path('.') / 'devel.env'
+# env_path = Path('.') / 'secret.env'
+env_path = Path('.') / 'devel.env'
 load_dotenv(dotenv_path=env_path)
 TOKEN = os.getenv('TG_TOKEN')
+# CHANNEL
 CHANNEL = os.getenv('CHANNEL')
+
+
+# Logging
+logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 # Implement updater
 updater = Updater(token=TOKEN, use_context=True)
@@ -26,7 +34,6 @@ j = updater.job_queue
 
 # Command /start: starts the bot and returns a nice message
 def start(update, context):
-    print('dbg')
     context.bot.send_message(chat_id=update.effective_chat.id, text='🔫 Lo è sempre stato.')
 
 start_handler = CommandHandler('start', start)
@@ -38,10 +45,8 @@ def day(update, context):
     is_thu = datetime.now().weekday() == 3
 
     if is_thu:
-        print("Sì")
         context.bot.send_message(chat_id=update.effective_chat.id, text="Sì")
     else:
-        print("No")
         context.bot.send_message(chat_id=update.effective_chat.id, text="No")
 
 day_handler = CommandHandler('day', day)
@@ -51,11 +56,11 @@ dispatcher.add_handler(day_handler)
 # Post message to channel every day at midnight
 def callback_thursday(context: telegram.ext.CallbackContext):
     if datetime.now().weekday() == 3:
-        print("Sì daily")
+        logger.debug("Channel updated with YES")
         context.bot.send_message(chat_id=CHANNEL, 
                              text='Sì')
     else:
-        print("No daily")
+        logger.debug("Channel updated with NO")
         context.bot.send_message(chat_id=CHANNEL, 
                              text='No')
 
