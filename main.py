@@ -34,10 +34,10 @@ def countdown_core(update, context):
             break
     return "Mancano " + str(i) + " giorni a giovedì"
     
-
 def countdown(update, context):
     countdown_return = countdown_core(update,context)
     context.bot.send_message(update.effective_chat.id, text=countdown_return)
+
 
 # Post message to channel every day at midnight:
 def callback_thursday(context: telegram.ext.CallbackContext):
@@ -62,10 +62,11 @@ def inline_countdown(update, context):
     results = [
         InlineQueryResultArticle(
             id=countdown_core(),
-            title='Quanto manca a giovedì?',
-            input_message_content=InputTextMessageContent(countdown_core)
+            title='Quanti giorni mancano a giovedì?',
+            input_message_content=InputTextMessageContent(countdown_core())
         )]
     context.bot.answer_inline_query(update.inline_query.id, results)
+
 
 def main():
     # Import env file for external variables and import TOKEN and CHANNEL:
