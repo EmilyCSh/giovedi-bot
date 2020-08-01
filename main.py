@@ -76,7 +76,7 @@ def inline_day(update, context):
     results.append(
         InlineQueryResultArticle(
             id=inline_day_eval(),
-            title='Day',
+            title='È giovedì oggi?',
             input_message_content=InputTextMessageContent(inline_day_eval())
         )
     )
