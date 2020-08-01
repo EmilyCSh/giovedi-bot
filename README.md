@@ -41,6 +41,6 @@ Per eseguire il bot con `pipenv`:
 
 ```bash
 pipenv install
-pipenv run pip install requirements.txt
+pipenv run pip install -r requirements.txt
 pipenv run python main.py
 ```
