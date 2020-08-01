@@ -6,7 +6,7 @@ import logging
 from dotenv import load_dotenv
 from pathlib import Path
 import os
-from datetime import datetime, time
+from datetime import datetime, time, timedelta
 from time import sleep
 from uuid import uuid4
 
@@ -25,6 +25,19 @@ def start(update, context):
 def day(update, context):
     context.bot.send_message(update.effective_chat.id, is_thu())
 
+# Command /countdown: how many days until Thursday?
+def countdown_core(update, context):
+    date = datetime.today()
+    for i in range(7):
+        date += timedelta(days=1)
+        if date.weekday() == 3:
+            break
+    return "Mancano " + str(i) + " giorni a giovedì"
+    
+
+def countdown(update, context):
+    countdown_return = countdown_core(update,context)
+    context.bot.send_message(update.effective_chat.id, text=countdown_return)
 
 # Post message to channel every day at midnight:
 def callback_thursday(context: telegram.ext.CallbackContext):
@@ -45,10 +58,18 @@ def inline_day(update, context):
         )]
     context.bot.answer_inline_query(update.inline_query.id, results)
 
+def inline_countdown(update, context):
+    results = [
+        InlineQueryResultArticle(
+            id=countdown_core(),
+            title='Quanto manca a giovedì?',
+            input_message_content=InputTextMessageContent(countdown_core)
+        )]
+    context.bot.answer_inline_query(update.inline_query.id, results)
 
 def main():
     # Import env file for external variables and import TOKEN and CHANNEL:
-    load_dotenv(dotenv_path=Path('.') / 'secret.env')
+    load_dotenv(dotenv_path=Path('.') / 'devel.env')
     TOKEN, CHANNEL = os.getenv('TG_TOKEN'), os.getenv('CHANNEL')
 
     # Implement updater:
@@ -58,12 +79,14 @@ def main():
     # Implement JobQueue job to be scheduled daily:
     j = updater.job_queue
 
-    # Commands:
+    # Chat commands:
     updater.dispatcher.add_handler(CommandHandler('start', start))
     updater.dispatcher.add_handler(CommandHandler('day', day))
+    updater.dispatcher.add_handler(CommandHandler('countdown', countdown))
 
-    # Run bot inline:
+    # Inline commands:
     updater.dispatcher.add_handler(InlineQueryHandler(inline_day))
+    updater.dispatcher.add_handler(InlineQueryHandler(inline_countdown))
 
     # Run and post to channel every day at midnight:
     midnight = time.fromisoformat('00:00:00')
