@@ -34,11 +34,11 @@ def day(update, context):
 # Post message to channel every day at midnight:
 def callback_thursday(context: telegram.ext.CallbackContext):
     if datetime.now().weekday() == 3:
-        logger.debug("Channel updated with YES")
+        logger.info("Channel updated with YES")
         context.bot.send_message(chat_id=CHANNEL, 
                              text='Sì')
     else:
-        logger.debug("Channel updated with NO")
+        logger.info("Channel updated with NO")
         context.bot.send_message(chat_id=CHANNEL, 
                              text='No')
 
@@ -65,8 +65,8 @@ def inline_day(update, context):
 def main():
     print(main)
     # Import env file for external variables:
-    env_path = Path('.') / 'secret.env':
-    # env_path = Path('.') / 'devel.env'
+    # env_path = Path('.') / 'secret.env':
+    env_path = Path('.') / 'devel.env'
     load_dotenv(dotenv_path=env_path)
     # Import TOKEN from env:
     TOKEN = os.getenv('TG_TOKEN')
