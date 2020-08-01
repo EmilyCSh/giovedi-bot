@@ -12,8 +12,8 @@ from time import sleep
 from uuid import uuid4
 
 # TOKEN
-# env_path = Path('.') / 'secret.env'
-env_path = Path('.') / 'devel.env'
+env_path = Path('.') / 'secret.env'
+# env_path = Path('.') / 'devel.env'
 load_dotenv(dotenv_path=env_path)
 TOKEN = os.getenv('TG_TOKEN')
 
