@@ -27,12 +27,8 @@ def day(update, context):
 
 # Command /countdown: how many days until Thursday?
 def countdown_core(update, context):
-    date = datetime.today()
-    for i in range(7):
-        date += timedelta(days=1)
-        if date.weekday() == 3:
-            break
-    return "Mancano " + str(i) + " giorni a giovedì"
+    w = datetime.today().weekday() 
+    return f"Mancano {(3 - w + 7) % 7} giorni a giovedì"
     
 def countdown(update, context):
     countdown_return = countdown_core(update,context)
@@ -41,7 +37,9 @@ def countdown(update, context):
 
 # Post message to channel every day at midnight:
 def callback_thursday(context: telegram.ext.CallbackContext):
-    logger.info(f"Channel updated with {msg := is_thu()}")
+    global CHANNEL
+    msg = is_thu()
+    logger.info(f"Channel updated with {msg}")
     context.bot.send_message(CHANNEL, msg)
 
 
@@ -52,26 +50,31 @@ def is_thu():
 def inline_day(update, context):
     results = [
         InlineQueryResultArticle(
-            id=is_thu(),
+            id="is_thu",
             title='È giovedì oggi?',
             input_message_content=InputTextMessageContent(is_thu())
-        )]
+        )
+    ]
     context.bot.answer_inline_query(update.inline_query.id, results)
 
 def inline_countdown(update, context):
     results = [
         InlineQueryResultArticle(
-            id=countdown_core(),
+            id="countdown",
             title='Quanti giorni mancano a giovedì?',
             input_message_content=InputTextMessageContent(countdown_core())
-        )]
+        )
+    ]
+    print(results)
     context.bot.answer_inline_query(update.inline_query.id, results)
 
 
 def main():
+    global CHANNEL
     # Import env file for external variables and import TOKEN and CHANNEL:
     load_dotenv(dotenv_path=Path('.') / 'devel.env')
-    TOKEN, CHANNEL = os.getenv('TG_TOKEN'), os.getenv('CHANNEL')
+    TOKEN = os.getenv('TG_TOKEN')
+    CHANNEL = os.getenv('CHANNEL')
 
     # Implement updater:
     updater = Updater(token=TOKEN, use_context=True)
@@ -90,8 +93,8 @@ def main():
     updater.dispatcher.add_handler(InlineQueryHandler(inline_countdown))
 
     # Run and post to channel every day at midnight:
-    midnight = time.fromisoformat('00:00:00')
-    job_daily = j.run_daily(callback_thursday, time = midnight)
+
+    job_daily = j.run_daily(callback_thursday, time = time())
 
     # Start the bot:
     updater.start_polling()
