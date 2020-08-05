@@ -53,19 +53,13 @@ def inline_day(update, context):
             id="is_thu",
             title='È giovedì oggi?',
             input_message_content=InputTextMessageContent(is_thu())
-        )
-    ]
-    context.bot.answer_inline_query(update.inline_query.id, results)
-
-def inline_countdown(update, context):
-    results = [
+        ),
         InlineQueryResultArticle(
             id="countdown",
             title='Quanti giorni mancano a giovedì?',
-            input_message_content=InputTextMessageContent(countdown_core())
+            input_message_content=InputTextMessageContent(countdown_core(update, context))
         )
     ]
-    print(results)
     context.bot.answer_inline_query(update.inline_query.id, results)
 
 
@@ -90,10 +84,8 @@ def main():
 
     # Inline commands:
     updater.dispatcher.add_handler(InlineQueryHandler(inline_day))
-    updater.dispatcher.add_handler(InlineQueryHandler(inline_countdown))
 
     # Run and post to channel every day at midnight:
-
     job_daily = j.run_daily(callback_thursday, time = time())
 
     # Start the bot:
