@@ -66,7 +66,7 @@ def inline_day(update, context):
 def main():
     global CHANNEL
     # Import env file for external variables and import TOKEN and CHANNEL:
-    load_dotenv(dotenv_path=Path('.') / 'devel.env')
+    load_dotenv(dotenv_path=Path('.') / 'secret.env')
     TOKEN = os.getenv('TG_TOKEN')
     CHANNEL = os.getenv('CHANNEL')
 
