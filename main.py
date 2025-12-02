@@ -2,7 +2,6 @@ import telegram.ext
 from telegram.ext import ApplicationBuilder, CommandHandler, InlineQueryHandler, Defaults
 from telegram import InlineQueryResultArticle, InputTextMessageContent
 import logging
-from dotenv import load_dotenv
 from pathlib import Path
 import os
 from datetime import datetime, time, timedelta
