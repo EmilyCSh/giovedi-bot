@@ -1,4 +1,4 @@
-FROM python:3
+FROM python:3-slim
 MAINTAINER = "chic_luke"
 LABEL description="Ti dice se è giovedì"
 WORKDIR /app/giovedibot
