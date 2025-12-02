@@ -1,5 +1,5 @@
 import telegram.ext
-from telegram.ext import Updater, CommandHandler, InlineQueryHandler
+from telegram.ext import Updater, CommandHandler, InlineQueryHandler, Defaults
 from telegram import InlineQueryResultArticle, InputTextMessageContent
 from telegram.utils.helpers import escape_markdown
 import logging
@@ -9,6 +9,7 @@ import os
 from datetime import datetime, time, timedelta
 from time import sleep
 from uuid import uuid4
+from pytz import timezone
 
 
 # Implement Logging module for exception handling:
@@ -23,11 +24,13 @@ def start(update, context):
 
 # Command /day: returns "Yes" if day is Thursday, else, "No":
 def day(update, context):
-    context.bot.send_message(update.effective_chat.id, is_thu())
+    tz = context.bot.defaults.tzinfo
+    context.bot.send_message(update.effective_chat.id, is_thu(tz))
 
 # Command /countdown: how many days until Thursday?
 def countdown_core(update, context):
-    w = datetime.today().weekday() 
+    tz = context.bot.defaults.tzinfo
+    w = datetime.today(tz).weekday()
     return f"Mancano {(3 - w + 7) % 7} giorni a giovedì"
     
 def countdown(update, context):
@@ -38,21 +41,23 @@ def countdown(update, context):
 # Post message to channel every day at midnight:
 def callback_thursday(context: telegram.ext.CallbackContext):
     global CHANNEL
-    msg = is_thu()
+    tz = context.bot.defaults.tzinfo
+    msg = is_thu(tz)
     logger.info(f"Channel updated with {msg}")
     context.bot.send_message(CHANNEL, msg)
 
 
 # Inline:
-def is_thu():
-    return "Sì" if datetime.now().weekday() == 3 else "No"
+def is_thu(tz):
+    return "Sì" if datetime.now(tz).weekday() == 3 else "No"
 
 def inline_day(update, context):
+    tz = context.bot.defaults.tzinfo
     results = [
         InlineQueryResultArticle(
             id="is_thu",
             title='È giovedì oggi?',
-            input_message_content=InputTextMessageContent(is_thu())
+            input_message_content=InputTextMessageContent(is_thu(tz))
         ),
         InlineQueryResultArticle(
             id="countdown",
@@ -67,9 +72,12 @@ def main():
     global CHANNEL
     TOKEN = os.getenv('TG_TOKEN')
     CHANNEL = os.getenv('CHANNEL')
+    TZ = os.getenv('TZ')
 
     # Implement updater:
-    updater = Updater(token=TOKEN, use_context=True)
+    tz = timezone(TZ)
+    defaults = Defaults(tzinfo=tz)
+    updater = Updater(token=TOKEN, use_context=True, defaults=defaults)
     dispatcher = updater.dispatcher
 
     # Implement JobQueue job to be scheduled daily:
@@ -84,7 +92,7 @@ def main():
     updater.dispatcher.add_handler(InlineQueryHandler(inline_day))
 
     # Run and post to channel every day at midnight:
-    job_daily = j.run_daily(callback_thursday, time = time())
+    job_daily = j.run_daily(callback_thursday, time = time(0, 0))
 
     # Start the bot:
     updater.start_polling()
