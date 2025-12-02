@@ -1,7 +1,6 @@
 import telegram.ext
-from telegram.ext import Updater, CommandHandler, InlineQueryHandler, Defaults
+from telegram.ext import ApplicationBuilder, CommandHandler, InlineQueryHandler, Defaults
 from telegram import InlineQueryResultArticle, InputTextMessageContent
-from telegram.utils.helpers import escape_markdown
 import logging
 from dotenv import load_dotenv
 from pathlib import Path
@@ -18,40 +17,40 @@ logger = logging.getLogger(__name__)
 
 
 # Command /start: starts the bot and returns a nice message:
-def start(update, context):
-    context.bot.send_message(chat_id=update.effective_chat.id, text='🔫 Lo è sempre stato.')
+async def start(update, context):
+    await context.bot.send_message(chat_id=update.effective_chat.id, text='🔫 Lo è sempre stato.')
 
 
 # Command /day: returns "Yes" if day is Thursday, else, "No":
-def day(update, context):
+async def day(update, context):
     tz = context.bot.defaults.tzinfo
-    context.bot.send_message(update.effective_chat.id, is_thu(tz))
+    await context.bot.send_message(update.effective_chat.id, is_thu(tz))
 
 # Command /countdown: how many days until Thursday?
 def countdown_core(update, context):
     tz = context.bot.defaults.tzinfo
-    w = datetime.today(tz).weekday()
+    w = datetime.now(tz).weekday()
     return f"Mancano {(3 - w + 7) % 7} giorni a giovedì"
-    
-def countdown(update, context):
+
+async def countdown(update, context):
     countdown_return = countdown_core(update,context)
-    context.bot.send_message(update.effective_chat.id, text=countdown_return)
+    await context.bot.send_message(update.effective_chat.id, text=countdown_return)
 
 
 # Post message to channel every day at midnight:
-def callback_thursday(context: telegram.ext.CallbackContext):
+async def callback_thursday(context: telegram.ext.CallbackContext):
     global CHANNEL
     tz = context.bot.defaults.tzinfo
     msg = is_thu(tz)
     logger.info(f"Channel updated with {msg}")
-    context.bot.send_message(CHANNEL, msg)
+    await context.bot.send_message(CHANNEL, msg)
 
 
 # Inline:
 def is_thu(tz):
     return "Sì" if datetime.now(tz).weekday() == 3 else "No"
 
-def inline_day(update, context):
+async def inline_day(update, context):
     tz = context.bot.defaults.tzinfo
     results = [
         InlineQueryResultArticle(
@@ -65,7 +64,7 @@ def inline_day(update, context):
             input_message_content=InputTextMessageContent(countdown_core(update, context))
         )
     ]
-    context.bot.answer_inline_query(update.inline_query.id, results)
+    await context.bot.answer_inline_query(update.inline_query.id, results)
 
 
 def main():
@@ -77,29 +76,27 @@ def main():
     # Implement updater:
     tz = timezone(TZ)
     defaults = Defaults(tzinfo=tz)
-    updater = Updater(token=TOKEN, use_context=True, defaults=defaults)
-    dispatcher = updater.dispatcher
+    updater = ApplicationBuilder().token(TOKEN).defaults(defaults).build()
 
     # Implement JobQueue job to be scheduled daily:
     j = updater.job_queue
 
     # Chat commands:
-    updater.dispatcher.add_handler(CommandHandler('start', start))
-    updater.dispatcher.add_handler(CommandHandler('day', day))
-    updater.dispatcher.add_handler(CommandHandler('countdown', countdown))
+    updater.add_handler(CommandHandler('start', start))
+    updater.add_handler(CommandHandler('day', day))
+    updater.add_handler(CommandHandler('countdown', countdown))
 
     # Inline commands:
-    updater.dispatcher.add_handler(InlineQueryHandler(inline_day))
+    updater.add_handler(InlineQueryHandler(inline_day))
 
     # Run and post to channel every day at midnight:
     job_daily = j.run_daily(callback_thursday, time = time(0, 0))
 
     # Start the bot:
-    updater.start_polling()
+    updater.run_polling()
 
     # Run bot until it gets stopped manually or receives
     # SIGINT, SIGTERM or SIGABRT:
-    updater.idle()
 
 
 # Entry point:
